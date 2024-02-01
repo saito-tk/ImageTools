@@ -17,7 +17,7 @@ def create_pngs_with_sizes(target_sizes_kb):
         for j in range(size):
             # RGBA値をランダムに設定（透明度も含む）
             pixels[i, j] = (
-            random.randint(0, 255), random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+                random.randint(0, 255), random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
 
     img.save(tmp_file, 'PNG')
 
@@ -36,11 +36,11 @@ def create_pngs_with_sizes(target_sizes_kb):
             for i in range(size, new_size):
                 for j in range(new_size):
                     pixels[i, j] = (
-                    random.randint(0, 255), random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+                        random.randint(0, 255), random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
             for j in range(size, new_size):
                 for i in range(size):
                     pixels[i, j] = (
-                    random.randint(0, 255), random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+                        random.randint(0, 255), random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
 
             new_img.save(tmp_file, 'PNG')
             current_size_kb = os.path.getsize(tmp_file) / 1024
@@ -55,6 +55,11 @@ def create_pngs_with_sizes(target_sizes_kb):
         output_filename = os.path.join(directory_path, f'output_{target_size_kb}.png')
         img.save(output_filename, 'PNG')
         print(f"目標サイズ {target_size_kb} KB に達しました: {current_size_kb:.2f} KB, サイズ: {size}x{size}")
+
+    # 一時ファイルを削除
+    if os.path.exists(tmp_file):
+        os.remove(tmp_file)
+        print(f"{tmp_file}が削除されました。")
 
 
 # 例：10KB, 50KB, 100KBのPNGファイルを生成
