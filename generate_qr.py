@@ -8,7 +8,7 @@ import qrcode
 def generate_qr():
     global qr_image, current_tab, test_number
     input_value = ""
-    app_id = "abc"
+    application_id = "abc"
 
     if current_tab == "文字列":
         input_value = str_entry.get()
@@ -20,7 +20,7 @@ def generate_qr():
     elif current_tab == "内部テスト共有":
         test_number = test_entry.get()
         if test_number.isdigit():  # 数字のみの場合
-            input_value = f"https://play.google.com/apps/test/{app_id}/{test_number}"
+            input_value = f"https://play.google.com/apps/test/{application_id}/{test_number}"
         else:  # 数字以外、または空文字が入力された場合
             qr_label.image = None
             qr_label.configure(image='')
