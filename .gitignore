@@ -1,5 +1,6 @@
 .idea/
 *.iml
+.venv/
 
 # generate_png_image_size.py
 output/
