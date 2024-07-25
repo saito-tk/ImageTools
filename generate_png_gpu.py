@@ -49,7 +49,7 @@ def create_pngs_with_sizes(target_sizes_kb):
             torch.mps.empty_cache()
 
         # ディレクトリパスを設定
-        directory_path = 'output/size_spec_gpu2'
+        directory_path = 'output/size_spec_gpu'
         os.makedirs(directory_path, exist_ok=True)  # ディレクトリがなければ作成
 
         # 目標サイズに達したらファイルを保存
