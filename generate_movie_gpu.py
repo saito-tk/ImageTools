@@ -24,7 +24,7 @@ def create_videos_with_sizes(target_sizes_mb, resolution=(1920, 1080), fps=60):
             video_writer.write(frame)
             frame_count += 1
 
-            if frame_count % 100 == 0:
+            if frame_count % fps == 0:
                 current_size_mb = os.path.getsize(tmp_file) / (1024 * 1024)
                 print(
                     f"動画 {idx + 1}/{len(target_sizes_mb)} 現在のサイズ: {current_size_mb:.2f} MB, フレーム数: {frame_count}")
@@ -38,13 +38,22 @@ def create_videos_with_sizes(target_sizes_mb, resolution=(1920, 1080), fps=60):
         # 出力ファイルにリネーム
         output_filename = os.path.join(directory_path, f'output_{target_size_mb}MB.mp4')
         os.rename(tmp_file, output_filename)
-        print(f"目標サイズ {target_size_mb} MB に達しました。ファイル: {output_filename}")
+        print(f"目標サイズ {target_size_mb} MB に達しました。ファイル: {output_filename} 動画時間：{frames_to_time(frame_count, fps)}")
 
         # メモリ解放
         torch.mps.empty_cache()
 
 
+def frames_to_time(frames, fps):
+    total_seconds = frames / fps
+    hours = int(total_seconds // 3600)
+    minutes = int((total_seconds % 3600) // 60)
+    seconds = total_seconds % 60
+    # return hours, minutes, seconds
+    return f"{hours:02d}:{minutes:02d}:{seconds:.2f}"
+
+
 # 使用例
 # target_sizes_mb = [150, 155, 160, 165, 170, 175, 180, 185, 190, 195, 200]  # 10MB, 20MB, 50MBの動画を作成
-target_sizes_mb = [100]
+target_sizes_mb = [300]
 create_videos_with_sizes(target_sizes_mb)
