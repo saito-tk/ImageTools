@@ -1,11 +1,19 @@
 import torch
-import numpy as np
 import os
 import cv2
 
 
+def get_device():
+    if torch.backends.mps.is_available():
+        return torch.device("mps")
+    elif torch.cuda.is_available():
+        return torch.device("cuda")
+    else:
+        return torch.device("cpu")
+
+
 def create_videos_with_sizes(target_sizes_mb, resolution=(1920, 1080), fps=60):
-    device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
+    device = get_device()
 
     for idx, target_size_mb in enumerate(target_sizes_mb):
         tmp_file = f'tmp_{idx}.mp4'  # 一時ファイル名
@@ -26,8 +34,7 @@ def create_videos_with_sizes(target_sizes_mb, resolution=(1920, 1080), fps=60):
 
             if frame_count % fps == 0:
                 current_size_mb = os.path.getsize(tmp_file) / (1024 * 1024)
-                print(
-                    f"動画 {idx + 1}/{len(target_sizes_mb)} 現在のサイズ: {current_size_mb:.2f} MB, フレーム数: {frame_count}")
+                print(f"動画 {idx + 1}/{len(target_sizes_mb)} 現在のサイズ: {current_size_mb:.2f} MB, フレーム数: {frame_count}")
 
         video_writer.release()
 
@@ -41,7 +48,10 @@ def create_videos_with_sizes(target_sizes_mb, resolution=(1920, 1080), fps=60):
         print(f"目標サイズ {target_size_mb} MB に達しました。ファイル: {output_filename} 動画時間：{frames_to_time(frame_count, fps)}")
 
         # メモリ解放
-        torch.mps.empty_cache()
+        if device.type == "cuda":
+            torch.cuda.empty_cache()
+        elif device.type == "mps":
+            torch.mps.empty_cache()
 
 
 def frames_to_time(frames, fps):
@@ -49,11 +59,10 @@ def frames_to_time(frames, fps):
     hours = int(total_seconds // 3600)
     minutes = int((total_seconds % 3600) // 60)
     seconds = total_seconds % 60
-    # return hours, minutes, seconds
     return f"{hours:02d}:{minutes:02d}:{seconds:.2f}"
 
 
 # 使用例
 # target_sizes_mb = [150, 155, 160, 165, 170, 175, 180, 185, 190, 195, 200]  # 10MB, 20MB, 50MBの動画を作成
-target_sizes_mb = [300]
+target_sizes_mb = [100]
 create_videos_with_sizes(target_sizes_mb)

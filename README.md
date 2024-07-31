@@ -13,8 +13,7 @@ create_pngs_with_sizes([100, 10, 50])
 ## generate_png_gpu.py
 - `generate_png_image_size.py`の画像生成処理はCPUベースで処理を行っていたため、高速化を目的としてGPU側で処理を行う形に書き換えたものです。
 - 使用方法は同じです。
-- なお、Apple Siliconに対応したGPUの設定を行っているのでソース上では`mps`を指定しています。
-- windowsの場合など、`cuda`を指定する必要がありそうです。
+- Apple Siliconの場合は`mps`が使用されますが、他にも`cuda`, `cpu`の順で使用できるものが選択されます。
 
 ## generate_movie_gpu.py
 - `generate_png_gpu.py`と同じようにGPUをベースに動画ファイルを作成したいとおもって作りました。

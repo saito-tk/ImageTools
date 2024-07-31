@@ -3,9 +3,16 @@ import numpy as np
 import os
 import cv2
 
+def get_device():
+    if torch.backends.mps.is_available():
+        return torch.device("mps")
+    elif torch.cuda.is_available():
+        return torch.device("cuda")
+    else:
+        return torch.device("cpu")
 
 def create_pngs_with_sizes(target_sizes_kb):
-    device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
+    device = get_device()
     target_sizes_kb.sort()  # サイズを昇順にソート
     size = 10  # 初期画像サイズを10x10に設定
     increase_step = 10  # 一度に増やすピクセル数
@@ -46,7 +53,10 @@ def create_pngs_with_sizes(target_sizes_kb):
 
             # メモリ解放
             del new_img
-            torch.mps.empty_cache()
+            if device.type == "cuda":
+                torch.cuda.empty_cache()
+            elif device.type == "mps":
+                torch.mps.empty_cache()
 
         # ディレクトリパスを設定
         directory_path = 'output/size_spec_gpu'
@@ -64,8 +74,7 @@ def create_pngs_with_sizes(target_sizes_kb):
 
 
 # 例：10KB, 50KB, 100KBのPNGファイルを生成
-target_sizes_kb = ([1000, 2000, 3000, 4000, 5000
-, 6000, 7000, 8000, 9000, 10000, 20000, 30000, 40000, 50000, 60000])
+target_sizes_kb = [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 20000, 30000, 40000, 50000, 60000]
 # 70000, 80000, 90000, 90500, 91000, 91500, 92000, 92500, 93000, 93500, 94000, 94500, 95000, 95500,
 # 96000, 96500, 97000, 97500, 98000, 98500, 99000, 99500, 100000, 112500, 125000, 137500, 150000,
 # 162500, 175000, 182500, 200000]
